@@ -1,5 +1,7 @@
 package com.example.broadcastpractive;
 
+
+
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,10 +9,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
 
+
+
 public class BaseActivity extends AppCompatActivity {
+
     private ForceOfflineReceiver receiver;
     protected void onCreate(Bundle saveInstancesState){
         super.onCreate(saveInstancesState);
@@ -31,6 +35,11 @@ public class BaseActivity extends AppCompatActivity {
             receiver=null;
         }
     }
+    protected void onDestroy(){
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
+    }
+
     class ForceOfflineReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -41,17 +50,13 @@ public class BaseActivity extends AppCompatActivity {
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    ActivityCollector.finishAll();//销毁所有活动
+                    ActivityCollector.finishAll();
                     Intent intent = new Intent(context,LoginActivity.class);
-                    context.startActivity(intent);//重新启动LoginActivity
+                    context.startActivity(intent);
                 }
             });
             builder.show();
         }
 
-    }
-    protected void onDestroy(){
-        super.onDestroy();
-        ActivityCollector.removeActivity(this);
     }
 }
